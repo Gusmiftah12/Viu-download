@@ -1,32 +1,30 @@
-name: VIU Video Downloader
+name: Convert MKV to MP4 and Upload to Google Drive
 
 on:
-  workflow_dispatch:  # Dijalankan secara manual di GitHub Actions
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
-  download_video:
+  convert_and_upload:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
-      - name: Set Up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+    - name: Set Up Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+        python3 -m pip install --upgrade pip
+        pip3 install -r requirements.txt
 
-      - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
-          sudo apt-get update && sudo apt-get install -y ffmpeg
+    - name: Verify ffmpeg Installation
+      run: ffmpeg -version
 
-      - name: Run VIU Downloader Script
-        run: python viudownloader.py
-      
-      - name: Upload Video as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: video_output
-          path: video.mp4
-          retention-days: 7  # Simpan video di GitHub selama 7 hari
+    - name: Run Conversion and Upload Script
+      run: |
+        echo "Starting the conversion and upload process..."
+        python3 main.py
