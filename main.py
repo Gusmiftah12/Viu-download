@@ -70,8 +70,8 @@ def get_series_id(url):
         'cookie_consent_accept': 'true',
         'subtitle_id': '6',
         '_ottAID': 'af26aff6-b94b-4e14-8052-c6e835180f85',
-        'session_id': '22b1d966-9e7a-46db-bd62-e3a029036c6f',
-    }    response = requests.get(url, headers=headers)
+        'session_id': '22b1d966-9e7a-46db-bd62-e3a029036c6f',  }    
+    response = requests.get(url, headers=headers)
     
     if response.status_code == 200:
         match = re.search(r'"series_id":\s*"(\d+)"', response.text)
