@@ -39,6 +39,7 @@ def get_series_id(url):
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
         'accept-language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
         'cache-control': 'max-age=0',
+        'cookie': '_ottUID=9873719d-4227-4cd9-823a-d1d37382f44c; onboarding_date=2025-01-08; onboarding_session=f63c887c-791b-4334-a063-e234a0a381c1; areaId=1000; countryCode=id; platform=browser; app_language=id; account_type=1; user_id=1701173790; user_level=2; AWSALB=UIr/uXJWbPthvypb9IdNIyiguYrxfJL35V4UuyliDscqlEt026RW0MMvw7ulNw/aZNQYXJ3uljBPLdCzHkM74SvSyui0xiOIkDXe8m+kqpcY62zocDihshhH/BC/; AWSALBCORS=UIr/uXJWbPthvypb9IdNIyiguYrxfJL35V4UuyliDscqlEt026RW0MMvw7ulNw/aZNQYXJ3uljBPLdCzHkM74SvSyui0xiOIkDXe8m+kqpcY62zocDihshhH/BC/; token=eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.BeN5m3IfEOjBoc2NcHF8ThZ7r8xZO_xZycBfUsy64lyM0ePSupyN-w.gUz3KiNyppMTujGYnKRJYA.fuWx7ciwQ33JWENLKye3H0LRc22dkp0ot-kkPb2gbqVMpr0H7AIw1TP2Aq7o9ABN6MvcTJnwpSCu3YhzJk05B3kTxHb7esFMgHVDTHp55qBJey9FCZ613zGac6dIRriEan3UkXO4yx9NKCvO25675RPphUsRerXxeQhKnCdb8VTVD2lP50K8u9Q2hJZm2RbhyQjPs9ntANv76piNhFc90kB4vk9cX5aFlLTwJIIMSMk8hTGE2fMQc-B8AhDbm3FRRiuicse1Blhi3N0BSqteyw.2ZPwFWX4oU6wDBtT4vO36A',
         'if-none-match': '"wrhsohnr3b3oit"',
         'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132"',
         'sec-ch-ua-mobile': '?1',
@@ -48,36 +49,18 @@ def get_series_id(url):
         'sec-fetch-site': 'same-origin',
         'sec-fetch-user': '?1',
         'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+        'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36'
     }
     
-    cookies = {
-        '_ottUID': '9873719d-4227-4cd9-823a-d1d37382f44c',
-        'onboarding_date': '2025-01-08',
-        'onboarding_session': 'f63c887c-791b-4334-a063-e234a0a381c1',
-        'areaId': '1000',
-        'countryCode': 'id',
-        'platform': 'browser',
-        'app_language': 'id',
-        'account_type': '1',
-        'user_id': '1701173790',
-        'user_level': '2',
-        'AWSALB': 'UIr/uXJWbPthvypb9IdNIyiguYrxfJL35V4UuyliDscqlEt026RW0MMvw7ulNw/aZNQYXJ3uljBPLdCzHkM74SvSyui0xiOIkDXe8m+kqpcY62zocDihshhH/BC/',
-        'AWSALBCORS': 'UIr/uXJWbPthvypb9IdNIyiguYrxfJL35V4UuyliDscqlEt026RW0MMvw7ulNw/aZNQYXJ3uljBPLdCzHkM74SvSyui0xiOIkDXe8m+kqpcY62zocDihshhH/BC/',
-        'token': 'eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.BeN5m3IfEOjBoc2NcHF8ThZ7r8xZO_xZycBfUsy64lyM0ePSupyN-w.gUz3KiNyppMTujGYnKRJYA.fuWx7ciwQ33JWENLKye3H0LRc22dkp0ot-kkPb2gbqVMpr0H7AIw1TP2Aq7o9ABN6MvcTJnwpSCu3YhzJk05B3kTxHb7esFMgHVDTHp55qBJey9FCZ613zGac6dIRriEan3UkXO4yx9NKCvO25675RPphUsRerXxeQhKnCdb8VTVD2lP50K8u9Q2hJZm2RbhyQjPs9ntANv76piNhFc90kB4vk9cX5aFlLTwJIIMSMk8hTGE2fMQc-B8AhDbm3FRRiuicse1Blhi3N0BSqteyw.2ZPwFWX4oU6wDBtT4vO36A',
-        'token_param': '{%22appVersion%22:%224.12.2%22%2C%22countryCode%22:%22ID%22%2C%22language%22:%228%22%2C%22platform%22:%22browser%22%2C%22platformFlagLabel%22:%22web%22%2C%22uuid%22:%229873719d-4227-4cd9-823a-d1d37382f44c%22%2C%22carrierId%22:%220%22%2C%22env%22:%22prod_1viu%22}',
-        'bitmovin_analytics_uuid': 'bcb87fc7-c4a7-41a6-bd7c-c9ad5a612c9b',
-        'cookie_consent_accept': 'true',
-        'subtitle_id': '6',
-        '_ottAID': 'af26aff6-b94b-4e14-8052-c6e835180f85',
-        'session_id': '22b1d966-9e7a-46db-bd62-e3a029036c6f',  }    
     response = requests.get(url, headers=headers)
     
     if response.status_code == 200:
         match = re.search(r'"series_id":\s*"(\d+)"', response.text)
         if match:
             return match.group(1)
+    
     return None
+
 
 def get_product_list(series_id):
     url = f'https://api-gateway-global.viu.com/api/mobile?r=/vod/product-list&series_id={series_id}'
