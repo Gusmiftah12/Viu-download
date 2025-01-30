@@ -68,15 +68,29 @@ def get_ccs_product_id(product_id, series_id):
         'accept-encoding': 'gzip'
     }
     
-    response = requests.get(url, headers=headers)
-    
-    if response.status_code == 200:
-        data = response.json()
-        product_list = data.get('data', {}).get('product_list', [])
-        if product_list:
-            return product_list[0].get('ccs_product_id')
-    
+    # Menambahkan penggunaan proxy di sini
+    for proxy in PROXIES:
+        ip, port, user, password = proxy.split(":")
+        proxy_url = f"http://{user}:{password}@{ip}:{port}"
+        proxies = {
+            "http": proxy_url,
+            "https": proxy_url
+        }
+        
+        try:
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                product_list = data.get('data', {}).get('product_list', [])
+                if product_list:
+                    return product_list[0].get('ccs_product_id')
+            else:
+                print(f"❌ Gagal mendapatkan CCS Product ID, status {response.status_code} menggunakan proxy {ip}")
+        except requests.RequestException as e:
+            print(f"❌ Proxy {ip} gagal: {e}")
+
     return None
+
 
 def get_stream_links(ccs_product_id):
     headers = {'Authorization': f'Bearer {BEARER_TOKEN}', 'User-Agent': 'Mozilla/5.0'}
