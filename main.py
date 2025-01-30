@@ -27,7 +27,7 @@ PROXIES = [
     "173.0.9.209:5792:pmcyaxai:1t5295cjepoo"
 ]
 
-def get_series_id(url):
+def get_product_and_series_id(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
         'Accept': '*/*'
@@ -44,35 +44,38 @@ def get_series_id(url):
         try:
             response = requests.get(url, headers=headers, proxies=proxies, timeout=10)
             if response.status_code == 200:
-                match = re.search(r'"series_id":\s*"(\d+)"', response.text)
-                if match:
-                    print(f"✅ Series ID ditemukan: {match.group(1)} menggunakan proxy {ip}")
-                    return match.group(1)
+                # Extract series_id and product_id
+                series_match = re.search(r'"series_id":\s*"(\d+)"', response.text)
+                product_match = re.search(r'"product_id":\s*"(\d+)"', response.text)
+                if series_match and product_match:
+                    print(f"✅ Series ID ditemukan: {series_match.group(1)} menggunakan proxy {ip}")
+                    print(f"✅ Product ID ditemukan: {product_match.group(1)} menggunakan proxy {ip}")
+                    return series_match.group(1), product_match.group(1)
             else:
-                print(f"❌ Gagal mendapatkan Series ID, status {response.status_code} menggunakan proxy {ip}")
+                print(f"❌ Gagal mendapatkan Series ID dan Product ID, status {response.status_code} menggunakan proxy {ip}")
         except requests.RequestException as e:
             print(f"❌ Proxy {ip} gagal: {e}")
 
-    return None  # Jika semua proxy gagal
+    return None, None  # Jika semua proxy gagal
 
-def get_product_list(series_id):
-    url = f'https://api-gateway-global.viu.com/api/mobile?platform_flag_label=web&area_id=1000&language_flag_id=8&platformFlagLabel=web&areaId=1000&languageFlagId=8&countryCode=ID&ut=0&r=%2Fvod%2Fproduct-list&os_flag_id=1&size=-1&sort=desc&series_id={series_id}'
+def get_ccs_product_id(product_id, series_id):
+    url = f'https://api-gateway-global.viu.com/api/mobile?r=/vod/product-list&product_id={product_id}&series_id={series_id}&size=1000&platform_flag_label=phone&language_flag_id=8&ut=2&area_id=1000&os_flag_id=2&countryCode=ID'
     headers = {
-        'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132"',
-        'Accept': 'application/json, text/plain, */*',
-        'Referer': 'https://www.viu.com/',
-        'sec-ch-ua-mobile': '?1',
         'Authorization': f'Bearer {BEARER_TOKEN}',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
-        'sec-ch-ua-platform': '"Android"',
+        'User-Agent': 'okhttp/4.12.0',
+        'platform': 'android',
+        'content-type': 'application/json',
+        'accept-encoding': 'gzip'
     }
+    
     response = requests.get(url, headers=headers)
+    
     if response.status_code == 200:
         data = response.json()
-        print(data)
         product_list = data.get('data', {}).get('product_list', [])
         if product_list:
             return product_list[0].get('ccs_product_id')
+    
     return None
 
 def get_stream_links(ccs_product_id):
@@ -113,12 +116,12 @@ def download_video(m3u8_url, subtitle_path, output_filename="video.mp4"):
 
 # **Eksekusi Skrip**
 while True:
-    series_id = get_series_id(VIU_URL)
-    if series_id:
-        break  # Keluar dari loop jika berhasil mendapatkan series_id
-    print("🔄 Mencoba lagi mendapatkan Series ID...")
+    series_id, product_id = get_product_and_series_id(VIU_URL)
+    if series_id and product_id:
+        break  # Keluar dari loop jika berhasil mendapatkan series_id dan product_id
+    print("🔄 Mencoba lagi mendapatkan Series ID dan Product ID...")
 
-ccs_product_id = get_product_list(series_id)
+ccs_product_id = get_ccs_product_id(product_id, series_id)
 if ccs_product_id:
     stream_links = get_stream_links(ccs_product_id)
     if stream_links and "s1080p" in stream_links:
