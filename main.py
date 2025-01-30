@@ -115,32 +115,31 @@ def download_subtitle():
         print("❌ Failed to download subtitle.")
         return None
 
+
+
 def download_video(m3u8_url, subtitle_path, output_filename="video.mp4"):
     headers = {
         'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/vnd.apple.mpegurl'
+        'Content-Type': 'application/vnd.apple.mpegurl',
+        'Range': 'bytes=0-',  # Ini untuk mendownload video secara bertahap jika diperlukan
+        'User-Agent': 'Viu/2.14.1 (Linux;Android 10) AndroidXMedia3/1.2.1',
+        'Accept-Encoding': 'identity',
+        'Host': 'vuclip-bpcdn.viu.com',
+        'Connection': 'Keep-Alive'
     }
 
-    # Mengonversi headers ke format yang sesuai dengan ffmpeg
-    header_args = []
-    for key, value in headers.items():
-        header_args.append("-headers")
-        header_args.append(f"{key}: {value}")
+    # Mengubah header menjadi format yang diterima oleh ffmpeg
+    headers_string = " ".join([f"-headers \"{key}: {value}\"" for key, value in headers.items()])
 
-    command = [
-        "ffmpeg", "-i", m3u8_url
-    ] + header_args + [
-        "-vf", f"scale=1920:1080,subtitles={subtitle_path}",
-        "-r", "24",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
-        "-c:a", "aac", "-b:a", "160k", "-ac", "2", "-af", "volume=3.0",
-        "-movflags", "+faststart", output_filename
-    ]
-    
-    subprocess.run(command)
+    command = f"ffmpeg -i {m3u8_url} {headers_string} -vf \"scale=1920:1080,subtitles={subtitle_path}\" -r 24 -c:v libx264 -preset veryfast -crf 22 -c:a aac -b:a 160k -ac 2 -af volume=3.0 -movflags +faststart {output_filename}"
+
+    # Menjalankan perintah ffmpeg
+    subprocess.run(command, shell=True)
     print(f"✅ Video saved as {output_filename}")
 
-# **Eksekusi Skrip**
+# Contoh pemanggilan fungsi
+# download_video("https://your_m3u8_url_here", "subtitle.srt")
+
 while True:
     series_id, product_id = get_product_and_series_id(VIU_URL)
     if series_id and product_id:
