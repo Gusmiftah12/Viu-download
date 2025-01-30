@@ -116,8 +116,20 @@ def download_subtitle():
         return None
 
 def download_video(m3u8_url, subtitle_path, output_filename="video.mp4"):
+    headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/vnd.apple.mpegurl'
+    }
+
+    # Mengonversi headers ke format yang sesuai dengan ffmpeg
+    header_args = []
+    for key, value in headers.items():
+        header_args.append("-headers")
+        header_args.append(f"{key}: {value}")
+
     command = [
-        "ffmpeg", "-i", m3u8_url,
+        "ffmpeg", "-i", m3u8_url
+    ] + header_args + [
         "-vf", f"scale=1920:1080,subtitles={subtitle_path}",
         "-r", "24",
         "-c:v", "libx264", "-preset", "veryfast", "-crf", "22",
