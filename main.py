@@ -56,11 +56,20 @@ def get_series_id(url):
     return None  # Jika semua proxy gagal
 
 def get_product_list(series_id):
-    url = f'https://api-gateway-global.viu.com/api/mobile?r=/vod/product-list&series_id={series_id}'
-    headers = {'Authorization': f'Bearer {BEARER_TOKEN}', 'User-Agent': 'Mozilla/5.0'}
+    url = f'https://api-gateway-global.viu.com/api/mobile?platform_flag_label=web&area_id=1000&language_flag_id=8&platformFlagLabel=web&areaId=1000&languageFlagId=8&countryCode=ID&ut=0&r=%2Fvod%2Fproduct-list&os_flag_id=1&size=-1&sort=desc&series_id={series_id}'
+    headers = {
+        'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132"',
+        'Accept': 'application/json, text/plain, */*',
+        'Referer': 'https://www.viu.com/',
+        'sec-ch-ua-mobile': '?1',
+        'Authorization': f'Bearer {BEARER_TOKEN}',
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+        'sec-ch-ua-platform': '"Android"',
+    }
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         data = response.json()
+        print(data)
         product_list = data.get('data', {}).get('product_list', [])
         if product_list:
             return product_list[0].get('ccs_product_id')
