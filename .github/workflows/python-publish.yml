@@ -1,30 +1,34 @@
-name: Convert MKV to MP4 and Upload to Google Drive
+name: Install N_m3u8DL-RE on Ubuntu
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  convert_and_upload:
+  install:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set Up Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ffmpeg
-        python3 -m pip install --upgrade pip
-        pip3 install -r requirements.txt
+      - name: Download N_m3u8DL-RE
+        run: wget https://github.com/nilaoda/N_m3u8DL-RE/releases/download/v0.3.0-beta/N_m3u8DL-RE_v0.3.0-beta_linux-arm64_20241203.tar.gz
 
-    - name: Verify ffmpeg Installation
-      run: ffmpeg -version
+      - name: Extract N_m3u8DL-RE
+        run: tar -xzf N_m3u8DL-RE_v0.3.0-beta_linux-arm64_20241203.tar.gz
 
-    - name: Run Conversion and Upload Script
-      run: |
-        echo "Starting the conversion and upload process..."
-        python3 main.py
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libmpv1
+
+      - name: Set up N_m3u8DL-RE
+        run: |
+          sudo mv N_m3u8DL-RE /usr/local/bin/
+          sudo chmod +x /usr/local/bin/N_m3u8DL-RE
+
+      - name: Verify installation
+        run: N_m3u8DL-RE --version
