@@ -111,7 +111,12 @@ def download_subtitle():
         return None
 
 def download_video(m3u8_url, output_dir, output_filename="video.mp4"):
-    command = f'N_m3u8DL-RE "{m3u8_url}" --save-dir "{output_dir}" --save-name "{output_filename}"'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+        'Accept': '*/*'
+    }
+    headers_string = " ".join([f'-H "{key}: {value}"' for key, value in headers.items()])
+    command = f'N_m3u8DL-RE "{m3u8_url}" --save-dir "{output_dir}" --save-name "{output_filename}" {headers_string}'
     
     # Menjalankan perintah N_m3u8DL-RE
     subprocess.run(command, shell=True)
@@ -124,25 +129,30 @@ def download_file(url, output_file):
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:
                     file.write(chunk)
-        print(f"{GREEN}[SUCCESS]{RESET} File downloaded: {output_file}")
+        print(f"File downloaded: {output_file}")
     else:
-        print(f"{YELLOW}[VIU-DOWNLOADER]{RED}: {WHITE}{output_file} {RED}| DOWNLOAD FAILED {RESET}")
+        print(f"Download failed for {output_file}")
 
 def download_hls(m3u8_url, output_file):
-    print(f"{YELLOW}[VIU-DOWNLOADER]{RED}: {WHITE}{m3u8_url}{RESET}\n")
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36',
+        'Accept': '*/*'
+    }
+    headers_string = " ".join([f'-H "{key}: {value}"' for key, value in headers.items()])
+    print(f"Downloading from: {m3u8_url}\n")
     base_filename = os.path.splitext(output_file)[0]
-    command = f'N_m3u8DL-RE.exe "{m3u8_url}" --save-name "{base_filename}" --save-dir "{logs_dir}" --thread-count 3 -mt -M format=mp4 --select-video "BEST" --select-audio "BEST"'
+    command = f'N_m3u8DL-RE.exe "{m3u8_url}" --save-name "{base_filename}" --save-dir "{logs_dir}" --thread-count 3 -mt -M format=mp4 --select-video "BEST" --select-audio "BEST" {headers_string}'
     try:
         exit_code = os.system(command)
         if exit_code == 0:
             downloaded_path = os.path.join(logs_dir, f"{base_filename}.mp4")
-            print(f"{GREEN}[SUCCESS]{RESET} HLS video downloaded: {downloaded_path}")
+            print(f"HLS video downloaded: {downloaded_path}")
             return downloaded_path
         else:
-            print(f"{RED}[ERROR]{RESET} Failed to download HLS video: {m3u8_url}")
+            print(f"Failed to download HLS video: {m3u8_url}")
             return None
     except Exception as e:
-        print(f"{RED}[ERROR]{RESET} Error during download: {e}")
+        print(f"Error during download: {e}")
         return None
 
 # Contoh pemanggilan fungsi
