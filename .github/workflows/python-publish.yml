@@ -33,5 +33,11 @@ jobs:
           sudo mv N_m3u8DL-RE /usr/local/bin/
           sudo chmod +x /usr/local/bin/N_m3u8DL-RE
 
-      - name: Verify installation
-        run: N_m3u8DL-RE --version
+      - name: Install Python
+        run: sudo apt-get install -y python3 python3-pip
+
+      - name: Install Python requirements
+        run: pip3 install -r requirements.txt
+
+      - name: Run Python script
+        run: python3 main.py
