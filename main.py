@@ -117,6 +117,34 @@ def download_video(m3u8_url, output_dir, output_filename="video.mp4"):
     subprocess.run(command, shell=True)
     print(f"✅ Video saved as {output_dir}/{output_filename}")
 
+def download_file(url, output_file):
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(output_file, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=1024):
+                if chunk:
+                    file.write(chunk)
+        print(f"{GREEN}[SUCCESS]{RESET} File downloaded: {output_file}")
+    else:
+        print(f"{YELLOW}[VIU-DOWNLOADER]{RED}: {WHITE}{output_file} {RED}| DOWNLOAD FAILED {RESET}")
+
+def download_hls(m3u8_url, output_file):
+    print(f"{YELLOW}[VIU-DOWNLOADER]{RED}: {WHITE}{m3u8_url}{RESET}\n")
+    base_filename = os.path.splitext(output_file)[0]
+    command = f'N_m3u8DL-RE.exe "{m3u8_url}" --save-name "{base_filename}" --save-dir "{logs_dir}" --thread-count 3 -mt -M format=mp4 --select-video "BEST" --select-audio "BEST"'
+    try:
+        exit_code = os.system(command)
+        if exit_code == 0:
+            downloaded_path = os.path.join(logs_dir, f"{base_filename}.mp4")
+            print(f"{GREEN}[SUCCESS]{RESET} HLS video downloaded: {downloaded_path}")
+            return downloaded_path
+        else:
+            print(f"{RED}[ERROR]{RESET} Failed to download HLS video: {m3u8_url}")
+            return None
+    except Exception as e:
+        print(f"{RED}[ERROR]{RESET} Error during download: {e}")
+        return None
+
 # Contoh pemanggilan fungsi
 # download_video("https://your_m3u8_url_here", "subtitle.srt")
 
