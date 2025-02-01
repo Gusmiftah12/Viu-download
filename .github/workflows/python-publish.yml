@@ -23,7 +23,10 @@ jobs:
         run: tar -xzf N_m3u8DL-RE_v0.3.0-beta_linux-arm64_20241203.tar.gz
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libmpv1
+        run: |
+          sudo apt-get update
+          sudo add-apt-repository ppa:mc3man/mpv-tests
+          sudo apt-get install -y libmpv1
 
       - name: Set up N_m3u8DL-RE
         run: |
